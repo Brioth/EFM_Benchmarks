@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Api Benchmark :: report</title>
+    <!--[if lt IE 9]><script src="https://cdnjs.cloudflare.com/ajax/libs/jqPlot/1.0.8/excanvas.min.js"></script><![endif]-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqPlot/1.0.8/jquery.jqplot.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqPlot/1.0.8/plugins/jqplot.canvasTextRenderer.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqPlot/1.0.8/plugins/jqplot.canvasAxisLabelRenderer.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqPlot/1.0.8/plugins/jqplot.highlighter.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqPlot/1.0.8/plugins/jqplot.cursor.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.6.1/lodash.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqPlot/1.0.8/jquery.jqplot.min.css" type="text/css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.0/styles/dark.min.css" type="text/css" />
+
+    <style type="text/css">
+      .jqplot-target {
+        color: #F1F1F1;
+      }
+      table.jqplot-table-legend, table.jqplot-cursor-legend {
+        background-color: rgba(101, 0, 253, 0.89)
+      }
+
+      body {
+        background: #3D3D3D;
+        color: #F1F1F1;
+      }
+
+      a {
+        color: #6699FF;
+      }
+
+      #report-details, #charts {
+        width: 100%;
+        float: left;
+        font-family: "Trebuchet MS",Arial,Helvetica,sans-serif;
+      }
+
+      #report-details {
+        margin-bottom: 20px;
+        text-align: center;
+      }
+
+      .buttons {
+        width: 100%;
+        border-bottom: 1px solid rgb(75, 72, 72);
+        padding-bottom: 10px;
+        margin-bottom: 10px;
+        text-align: right;
+      }
+
+      .button {
+        margin-right: 10px;
+        padding: 6px;
+        text-decoration: none;
+      }
+
+      .button.selected {
+        background-color: rgb(56, 56, 56);
+      }
+
+      .chart {
+        width: 60%;
+        height: 450px;
+        float: left;
+      }
+
+      .distchart {
+        width: 96%;
+        height: 450px;
+        float: left;
+      }
+
+      .panel {
+        height: 450px;
+        overflow-y: auto;
+      }
+
+      .route {
+        width: 90%;
+        margin: 3%;
+        padding: 2%;
+        float: left;
+        background-color: #000000;
+        border-radius: 15px;
+      }
+      .stats-details {
+        font-family: "Trebuchet MS",Arial,Helvetica,sans-serif;
+        font-size: 15px;
+        float: left;
+        width: 36%;
+        padding: 2%;
+      }
+
+      .green {
+        color: green;
+      }
+
+      .red {
+        color: red;
+      }
+
+      .hide {
+        display:none;
+      }
+
+      pre code {
+        overflow-x: auto;
+      }
+
+    </style>
+  </head>
+  <body>
+    <script><!--
+    var data={"benchmark":{"Node":{"postRoute":{"name":"Node/postRoute","href":"http://localhost:3000/assignments","stats":{"sample":[0.034183112,0.00902716,0.007725037,0.006740148,0.008059654,0.006979161,0.006949926,0.007732148,0.006684445,0.006499161,0.006792691,0.006942815,0.006802173,0.006712494,0.00668642,0.006999704,0.007066864,0.007483654,0.006471901,0.010717235,0.007351704,0.007535012,0.010107654,0.009058765,0.006543408,0.006450568,0.008182519,0.009479111,0.007259259,0.007793382,0.009778963,0.010663111,0.009162666,0.008368198,0.008823308,0.008163951,0.009341629,0.00854479,0.007467061,0.007124543,0.006639802,0.006691951,0.006860246,0.008781432,0.006603852,0.007437432,0.009830716,0.008376098,0.010126222,0.006727111,0.007191309,0.006610963,0.015604938,0.014215111,0.010040494,0.009848494,0.009499654,0.009283951,0.01084721,0.010562765,0.009879309,0.009775408,0.00828484,0.007829334,0.00720079,0.007930469,0.008027655,0.006314667,0.006378272,0.007049481,0.006154271,0.006349827,0.005419062,0.00562963,0.005747358,0.005604346,0.005795161,0.005968592,0.005718914,0.00800632,0.006173629,0.007046321,0.007559111,0.007883456,0.007363555,0.008166716,0.006712494,0.006554864,0.006785581,0.006718815,0.006629926,0.006990222,0.006575802,0.005992692,0.006179951,0.006223012,0.005771852,0.005690864,0.005800691,0.006172049],"mean":0.007942905649999998,"singleMean":0.007942905649999998,"variance":0.000009979543767792625,"deviation":0.0031590415900701,"sem":0.00031590415900701,"moe":0.0006191721516537397,"rme":7.795285238642357,"p75":0.008502617,"p95":0.0107145288,"p99":0.03399733025999991,"p999":0.034183112},"errors":{},"options":{"method":"post","concurrencyLevel":1,"start":"2019-05-13T09:39:07.660Z","end":"2019-05-13T09:39:08.457Z"},"request":{"data":"Dynamic data"},"response":{"header":{"x-powered-by":"Express","content-type":"application/json; charset=utf-8","content-length":"229","etag":"W/\"e5-m/FeOirZzUcy290IqbVl+vktbc4\"","date":"Mon, 13 May 2019 09:39:07 GMT","connection":"close"},"statusCode":200,"body":"{\"_id\":\"5cd93b3bf0d41271c0f19f63\",\"name\":\"Exclusive static artificial intelligence\",\"description\":\"mesh wireless technologies\",\"startDate\":\"2018-08-18T22:00:00.000Z\",\"endDate\":\"2019-02-17T23:00:00.000Z\",\"FTEPerWeek\":6.22,\"__v\":0}","type":"application/json"},"hz":125.89851171151709},"getAllRoute":{"name":"Node/getAllRoute","href":"http://localhost:3000/assignments/","stats":{"sample":[0.009361778,0.007357629,0.007117432,0.007764149,0.008363457,0.007065284,0.007714765,0.008261926,0.008065976,0.015286124,0.008990025,0.010168099,0.008893234,0.010244741,0.012082172,0.008726123,0.011852642,0.008533334,0.009208099,0.008756938,0.00822242,0.007822222,0.008119309,0.007257284,0.007213037,0.006865778,0.007128889,0.008397037,0.010424099,0.007386865,0.007969185,0.008430617,0.009232988,0.010610172,0.008921679,0.011900445,0.009977284,0.009927901,0.008889679,0.009229432,0.011627062,0.009328988,0.007504197,0.007481679,0.007528296,0.006518123,0.00633521,0.006198914,0.00617126,0.00704079,0.006068544,0.006089086,0.00605037,0.006244345,0.00623921,0.006122272,0.006693926,0.006366025,0.006289382,0.006712889,0.006572642,0.006297679,0.006358123,0.007660247,0.008431408,0.007411753,0.006938864,0.006873284,0.007225679,0.006987062,0.006718025,0.006706568,0.007653926,0.006662717,0.006747259,0.007258074,0.007217778,0.006285432,0.006695506,0.006487704,0.00576,0.005690075,0.005980049,0.005808198,0.006104099,0.005557729,0.0056,0.007056198,0.005999803,0.005842173,0.005889186,0.009512296,0.00873521,0.010663111,0.008304197,0.009750914,0.009496099,0.008894815,0.008904691,0.008009481],"mean":0.007830988709999999,"singleMean":0.007830988709999999,"variance":0.0000029824217350595216,"deviation":0.0017269689444398013,"sem":0.00017269689444398013,"moe":0.0003384859131102011,"rme":4.322390513447709,"p75":0.00889234525,"p95":0.01157886444999999,"p99":0.015254084479999984,"p999":0.015286124},"errors":{},"options":{"method":"get","concurrencyLevel":1,"start":"2019-05-13T09:39:08.465Z","end":"2019-05-13T09:39:09.251Z"},"request":{"headers":{"Accept":"application/json"}},"response":{"header":{"x-powered-by":"Express","content-type":"application/json; charset=utf-8","content-length":"22500","etag":"W/\"57e4-d7IqMH7GmarGPgbEHyNqKR9x/M0\"","date":"Mon, 13 May 2019 09:39:08 GMT","connection":"close"},"statusCode":200,"body":"[{\"_id\":\"5cd93ab9f184586224c7dcc5\",\"name\":\"test\",\"description\":null,\"startDate\":\"2019-01-04T23:00:00.000Z\",\"endDate\":null,\"FTEPerWeek\":5,\"__v\":0},{\"_id\":\"5cd93b2df0d41271c0f19f59\",\"name\":\"Synchronised asynchronous database\",\"description\":\"revolutionize compelling metrics\",\"startDate\":\"2018-11-20T23:00:00.000Z\",\"endDate\":\"2018-08-13T22:00:00.000Z\",\"FTEPerWeek\":2.73,\"__v\":0},{\"_id\":\"5cd93b2ef0d41271c0f19f5a\",\"name\":\"Self-enabling holistic open architecture\",\"description\":null,\"startDate\":\"2018-09-10T22:00:00.000Z\",\"endDate\":null,\"FTEPerWeek\":4.17,\"__v\":0},{\"_id\":\"5cd93b2ef0d41271c0f19f5b\",\"name\":\"Synergistic analyzing neural-net\",\"description\":\"e-enable integrated communities\",\"startDate\":\"2018-10-09T22:00:00.000Z\",\"endDate\":\"2019-03-11T23:00:00.000Z\",\"FTEPerWeek\":4.62,\"__v\":0},{\"_id\":\"5cd93b2ef0d41271c0f19f5c\",\"name\":\"Stand-alone grid-enabled synergy\",\"description\":null,\"startDate\":\"2019-05-01T22:00:00.000Z\",\"endDate\":null,\"FTEPerWeek\":3.49,\"__v\":0},{\"_id\":\"5cd93b2ef0d41271c0f19f5d\",\"name\":\"Re-contextualized web-enabled product\",\"description\":null,\"startDate\":\"2018-12-03T23:00:00.000Z\",\"endDate\":null,\"FTEPerWeek\":7.16,\"__v\":0},{\"_id\":\"5cd93b2ef0d41271c0f19f5e\",\"name\":\"Up-sized fresh-thinking knowledge base\",\"description\":\"revolutionize bleeding-edge e-services\",\"startDate\":\"2018-11-20T23:00:00.000Z\",\"endDate\":\"2018-05-31T22:00:00.000Z\",\"FTEPerWeek\":7.01,\"__v\":0},{\"_id\":\"5cd93b2ef0d41271c0f19f5f\",\"name\":\"Organic exuding strategy\",\"description\":null,\"startDate\":\"2018-09-09T22:00:00.000Z\",\"endDate\":null,\"FTEPerWeek\":2.54,\"__v\":0},{\"_id\":\"5cd93b2ef0d41271c0f19f60\",\"name\":\"Managed mission-critical product\",\"description\":null,\"startDate\":\"2018-06-09T22:00:00.000Z\",\"endDate\":null,\"FTEPerWeek\":9.31,\"__v\":0},{\"_id\":\"5cd93b2ef0d41271c0f19f61\",\"name\":\"Balanced grid-enabled Graphical User Interface\",\"description\":\"visualize clicks-and-mortar vortals\",\"startDate\":\"2018-05-23T22:00:00.000Z\",\"endDate\":\"2018-09-03T22:00:00.000Z\",\"FTEPerWeek\":2.69,\"__v\":0},{\"_id\":\"5cd93b2ef0d41271c0f19f62\",\"name\":\"Business-focused explicit contingency\",\"description\":\"drive ubiquitous synergies\",\"startDate\":\"2019-05-07T22:00:00.000Z\",\"endDate\":\"2019-02-21T23:00:00.000Z\",\"FTEPerWeek\":8.18,\"__v\":0},{\"_id\":\"5cd93b3bf0d41271c0f19f63\",\"name\":\"Exclusive static artificial intelligence\",\"description\":\"mesh wireless technologies\",\"startDate\":\"2018-08-18T22:00:00.000Z\",\"endDate\":\"2019-02-17T23:00:00.000Z\",\"FTEPerWeek\":6.22,\"__v\":0},{\"_id\":\"5cd93b3bf0d41271c0f19f64\",\"name\":\"Intuitive local local area network\",\"description\":\"architect bricks-and-clicks technologies\",\"startDate\":\"2018-11-13T23:00:00.000Z\",\"endDate\":\"2018-08-28T22:00:00.000Z\",\"FTEPerWeek\":2.56,\"__v\":0},{\"_id\":\"5cd93b3bf0d41271c0f19f65\",\"name\":\"Vision-oriented transitional process improvement\",\"description\":\"synthesize magnetic web services\",\"startDate\":\"2018-06-20T22:00:00.000Z\",\"endDate\":\"2019-04-11T22:00:00.000Z\",\"FTEPerWeek\":4.09,\"__v\":0},{\"_id\":\"5cd93b3bf0d41271c0f19f66\",\"name\":\"Triple-buffered hybrid approach\",\"description\":\"extend intuitive action-items\",\"startDate\":\"2019-03-27T23:00:00.000Z\",\"endDate\":\"2019-04-14T22:00:00.000Z\",\"FTEPerWeek\":1.73,\"__v\":0},{\"_id\":\"5cd93b3bf0d41271c0f19f67\",\"name\":\"Exclusive motivating middleware\",\"description\":\"streamline revolutionary functionalities\",\"startDate\":\"2018-06-13T22:00:00.000Z\",\"endDate\":\"2018-10-30T23:00:00.000Z\",\"FTEPerWeek\":6.52,\"__v\":0},{\"_id\":\"5cd93b3bf0d41271c0f19f68\",\"name\":\"Fundamental scalable complexity\",\"description\":null,\"startDate\":\"2018-11-14T23:00:00.000Z\",\"endDate\":null,\"FTEPerWeek\":9.54,\"__v\":0},{\"_id\":\"5cd93b3bf0d41271c0f19f69\",\"name\":\"Monitored object-oriented data-warehouse\",\"description\":\"enhance vertical supply-chains\",\"startDate\":\"2019-02-12T23:00:00.000Z\",\"endDate\":\"2019-01-29T23:00:00.000Z\",\"FTEPerWeek\":3.98,\"__v\":0},{\"_id\":\"5cd93b3bf0d41271c0f19f6a\",\"name\":\"Synchronised directional application\",\"description\":null,\"startDate\":\"2018-12-21T23:00:00.000Z\",\"endDate\":null,\"FTEPerWeek\":5.97,\"__v\":0},{\"_id\":\"5cd93b3bf0d41271c0f19f6b\",\"name\":\"Universal radical parallelism\",\"description\":\"generate robust systems\",\"startDate\":\"2018-12-01T23:00:00.000Z\",\"endDate\":\"2018-07-06T22:00:00.000Z\",\"FTEPerWeek\":4.1,\"__v\":0},{\"_id\":\"5cd93b3bf0d41271c0f19f6c\",\"name\":\"Adaptive mission-critical model\",\"description\":\"strategize seamless paradigms\",\"startDate\":\"2019-02-19T23:00:00.000Z\",\"endDate\":\"2018-12-12T23:00:00.000Z\",\"FTEPerWeek\":6.63,\"__v\":0},{\"_id\":\"5cd93b3bf0d41271c0f19f6d\",\"name\":\"Function-based stable secured line\",\"description\":null,\"startDate\":\"2018-10-23T22:00:00.000Z\",\"endDate\":null,\"FTEPerWeek\":8.06,\"__v\":0},{\"_id\":\"5cd93b3bf0d41271c0f19f6e\",\"name\":\"Fully-configurable logistical framework\",\"description\":null,\"startDate\":\"2018-11-07T23:00:00.000Z\",\"endDate\":null,\"FTEPerWeek\":7.88,\"__v\":0},{\"_id\":\"5cd93b3bf0d41271c0f19f6f\",\"name\":\"Devolved discrete process improvement\",\"description\":null,\"startDate\":\"2018-09-16T22:00:00.000Z\",\"endDate\":null,\"FTEPerWeek\":2.03,\"__v\":0},{\"_id\":\"5cd93b3bf0d41271c0f19f70\",\"name\":\"Future-proofed user-facing capacity\",\"description\":\"embrace real-time web services\",\"startDate\":\"2018-07-13T22:00:00.000Z\",\"endDate\":\"2018-07-14T22:00:00.000Z\",\"FTEPerWeek\":7.13,\"__v\":0},{\"_id\":\"5cd93b3bf0d41271c0f19f71\",\"name\":\"Total modular instruction set\",\"description\":\"architect synergistic networks\",\"startDate\":\"2018-11-22T23:00:00.000Z\",\"endDate\":\"2018-05-30T22:00:00.000Z\",\"FTEPerWeek\":5.23,\"__v\":0},{\"_id\":\"5cd93b3bf0d41271c0f19f72\",\"name\":\"Organized client-server product\",\"description\":\"cultivate open-source relationships\",\"startDate\":\"2018-10-16T22:00:00.000Z\",\"endDate\":\"2018-11-03T23:00:00.000Z\",\"FTEPerWeek\":1.26,\"__v\":0},{\"_id\":\"5cd93b3bf0d41271c0f19f73\",\"name\":\"Down-sized content-based algorithm\",\"description\":null,\"startDate\":\"2018-12-22T23:00:00.000Z\",\"endDate\":null,\"FTEPerWeek\":2.95,\"__v\":0},{\"_id\":\"5cd93b3bf0d41271c0f19f74\",\"name\":\"Realigned client-server architecture\",\"description\":\"deploy viral models\",\"startDate\":\"2019-04-09T22:00:00.000Z\",\"endDate\":\"2018-08-28T22:00:00.000Z\",\"FTEPerWeek\":8.25,\"__v\":0},{\"_id\":\"5cd93b3bf0d41271c0f19f75\",\"name\":\"Optional content-based structure\",\"description\":null,\"startDate\":\"2019-01-28T23:00:00.000Z\",\"endDate\":null,\"FTEPerWeek\":3.55,\"__v\":0},{\"_id\":\"5cd93b3bf0d41271c0f19f76\",\"name\":\"Seamless directional portal\",\"description\":null,\"startDate\":\"2019-02-17T23:00:00.000Z\",\"endDate\":null,\"FTEPerWeek\":4.08,\"__v\":0},{\"_id\":\"5cd93b3bf0d41271c0f19f77\",\"name\":\"Reactive non-volatile portal\",\"description\":null,\"startDate\":\"2019-01-06T23:00:00.000Z\",\"endDate\":null,\"FTEPerWeek\":6.59,\"__v\":0},{\"_id\":\"5cd93b3bf0d41271c0f19f78\",\"name\":\"Fully-configurable transitional algorithm\",\"description\":\"benchmark impactful schemas\",\"startDate\":\"2019-02-12T23:00:00.000Z\",\"endDate\":\"2019-02-04T23:00:00.000Z\",\"FTEPerWeek\":3.95,\"__v\":0},{\"_id\":\"5cd93b3bf0d41271c0f19f79\",\"name\":\"Down-sized intermediate projection\",\"description\":\"incentivize 24/7 vortals\",\"startDate\":\"2018-08-14T22:00:00.000Z\",\"endDate\":\"2019-02-17T23:00:00.000Z\",\"FTEPerWeek\":6.78,\"__v\":0},{\"_id\":\"5cd93b3bf0d41271c0f19f7a\",\"name\":\"Assimilated static time-frame\",\"description\":null,\"startDate\":\"2018-08-01T22:00:00.000Z\",\"endDate\":null,\"FTEPerWeek\":8.4,\"__v\":0},{\"_id\":\"5cd93b3bf0d41271c0f19f7b\",\"name\":\"Customizable leading edge open architecture\",\"description\":null,\"startDate\":\"2018-06-16T22:00:00.000Z\",\"endDate\":null,\"FTEPerWeek\":4.92,\"__v\":0},{\"_id\":\"5cd93b3bf0d41271c0f19f7c\",\"name\":\"Profound content-based data-warehouse\",\"description\":null,\"startDate\":\"2018-06-13T22:00:00.000Z\",\"endDate\":null,\"FTEPerWeek\":10,\"__v\":0},{\"_id\":\"5cd93b3bf0d41271c0f19f7d\",\"name\":\"Business-focused 5th generation extranet\",\"description\":\"transform end-to-end e-commerce\",\"startDate\":\"2019-04-04T22:00:00.000Z\",\"endDate\":\"2018-09-09T22:00:00.000Z\",\"FTEPerWeek\":7.96,\"__v\":0},{\"_id\":\"5cd93b3bf0d41271c0f19f7e\",\"name\":\"Re-contextualized dedicated utilisation\",\"description\":null,\"startDate\":\"2018-06-20T22:00:00.000Z\",\"endDate\":null,\"FTEPerWeek\":9.21,\"__v\":0},{\"_id\":\"5cd93b3bf0d41271c0f19f7f\",\"name\":\"Innovative national budgetary management\",\"description\":null,\"startDate\":\"2018-11-24T23:00:00.000Z\",\"endDate\":null,\"FTEPerWeek\":6.52,\"__v\":0},{\"_id\":\"5cd93b3bf0d41271c0f19f80\",\"name\":\"Progressive object-oriented groupware\",\"description\":null,\"startDate\":\"2018-10-05T22:00:00.000Z\",\"endDate\":null,\"FTEPerWeek\":4.29,\"__v\":0},{\"_id\":\"5cd93b3bf0d41271c0f19f81\",\"name\":\"Realigned multi-tasking complexity\",\"description\":null,\"startDate\":\"2018-10-01T22:00:00.000Z\",\"endDate\":null,\"FTEPerWeek\":4.71,\"__v\":0},{\"_id\":\"5cd93b3bf0d41271c0f19f82\",\"name\":\"Public-key fault-tolerant implementation\",\"description\":null,\"startDate\":\"2018-08-05T22:00:00.000Z\",\"endDate\":null,\"FTEPerWeek\":8.38,\"__v\":0},{\"_id\":\"5cd93b3bf0d41271c0f19f83\",\"name\":\"Persevering global function\",\"description\":null,\"startDate\":\"2019-01-11T23:00:00.000Z\",\"endDate\":null,\"FTEPerWeek\":9.49,\"__v\":0},{\"_id\":\"5cd93b3bf0d41271c0f19f84\",\"name\":\"Public-key encompassing software\",\"description\":null,\"startDate\":\"2018-10-03T22:00:00.000Z\",\"endDate\":null,\"FTEPerWeek\":1.33,\"__v\":0},{\"_id\":\"5cd93b3bf0d41271c0f19f85\",\"name\":\"Up-sized optimal service-desk\",\"description\":\"innovate plug-and-play networks\",\"startDate\":\"2018-11-07T23:00:00.000Z\",\"endDate\":\"2018-08-06T22:00:00.000Z\",\"FTEPerWeek\":8.05,\"__v\":0},{\"_id\":\"5cd93b3bf0d41271c0f19f86\",\"name\":\"Decentralized 6th generation algorithm\",\"description\":\"deliver compelling convergence\",\"startDate\":\"2019-04-05T22:00:00.000Z\",\"endDate\":\"2019-01-31T23:00:00.000Z\",\"FTEPerWeek\":8.43,\"__v\":0},{\"_id\":\"5cd93b3bf0d41271c0f19f87\",\"name\":\"Diverse foreground model\",\"description\":null,\"startDate\":\"2018-09-08T22:00:00.000Z\",\"endDate\":null,\"FTEPerWeek\":3.29,\"__v\":0},{\"_id\":\"5cd93b3bf0d41271c0f19f88\",\"name\":\"Optional multimedia interface\",\"description\":\"monetize value-added niches\",\"startDate\":\"2018-08-04T22:00:00.000Z\",\"endDate\":\"2019-02-02T23:00:00.000Z\",\"FTEPerWeek\":1.5,\"__v\":0},{\"_id\":\"5cd93b3bf0d41271c0f19f89\",\"name\":\"Fully-configurable asymmetric hub\",\"description\":\"whiteboard viral e-services\",\"startDate\":\"2018-11-19T23:00:00.000Z\",\"endDate\":\"2018-11-27T23:00:00.000Z\",\"FTEPerWeek\":6.54,\"__v\":0},{\"_id\":\"5cd93b3bf0d41271c0f19f8a\",\"name\":\"Realigned system-worthy internet solution\",\"description\":null,\"startDate\":\"2018-12-17T23:00:00.000Z\",\"endDate\":null,\"FTEPerWeek\":7.4,\"__v\":0},{\"_id\":\"5cd93b3cf0d41271c0f19f8b\",\"name\":\"Pre-emptive client-driven structure\",\"description\":null,\"startDate\":\"2019-01-19T23:00:00.000Z\",\"endDate\":null,\"FTEPerWeek\":9.95,\"__v\":0},{\"_id\":\"5cd93b3cf0d41271c0f19f8c\",\"name\":\"Assimilated client-driven data-warehouse\",\"description\":null,\"startDate\":\"2018-12-11T23:00:00.000Z\",\"endDate\":null,\"FTEPerWeek\":4.46,\"__v\":0},{\"_id\":\"5cd93b3cf0d41271c0f19f8d\",\"name\":\"Programmable impactful algorithm\",\"description\":\"harness virtual web-readiness\",\"startDate\":\"2018-08-25T22:00:00.000Z\",\"endDate\":\"2019-03-13T23:00:00.000Z\",\"FTEPerWeek\":1.57,\"__v\":0},{\"_id\":\"5cd93b3cf0d41271c0f19f8e\",\"name\":\"Intuitive tertiary budgetary management\",\"description\":\"recontextualize world-class e-services\",\"startDate\":\"2018-10-27T22:00:00.000Z\",\"endDate\":\"2018-06-07T22:00:00.000Z\",\"FTEPerWeek\":7.34,\"__v\":0},{\"_id\":\"5cd93b3cf0d41271c0f19f8f\",\"name\":\"Balanced clear-thinking firmware\",\"description\":null,\"startDate\":\"2018-05-20T22:00:00.000Z\",\"endDate\":null,\"FTEPerWeek\":1.83,\"__v\":0},{\"_id\":\"5cd93b3cf0d41271c0f19f90\",\"name\":\"Open-architected mission-critical open system\",\"description\":\"integrate robust infomediaries\",\"startDate\":\"2018-06-14T22:00:00.000Z\",\"endDate\":\"2019-02-19T23:00:00.000Z\",\"FTEPerWeek\":1.52,\"__v\":0},{\"_id\":\"5cd93b3cf0d41271c0f19f91\",\"name\":\"Robust secondary open system\",\"description\":null,\"startDate\":\"2018-10-13T22:00:00.000Z\",\"endDate\":null,\"FTEPerWeek\":1.23,\"__v\":0},{\"_id\":\"5cd93b3cf0d41271c0f19f92\",\"name\":\"Visionary contextually-based function\",\"description\":null,\"startDate\":\"2019-05-09T22:00:00.000Z\",\"endDate\":null,\"FTEPerWeek\":7.67,\"__v\":0},{\"_id\":\"5cd93b3cf0d41271c0f19f93\",\"name\":\"Visionary modular approach\",\"description\":\"iterate viral methodologies\",\"startDate\":\"2018-10-24T22:00:00.000Z\",\"endDate\":\"2018-10-07T22:00:00.000Z\",\"FTEPerWeek\":6.27,\"__v\":0},{\"_id\":\"5cd93b3cf0d41271c0f19f94\",\"name\":\"Distributed regional structure\",\"description\":\"synthesize efficient models\",\"startDate\":\"2019-01-17T23:00:00.000Z\",\"endDate\":\"2018-12-26T23:00:00.000Z\",\"FTEPerWeek\":9.81,\"__v\":0},{\"_id\":\"5cd93b3cf0d41271c0f19f95\",\"name\":\"Proactive intermediate adapter\",\"description\":\"incentivize efficient initiatives\",\"startDate\":\"2019-02-09T23:00:00.000Z\",\"endDate\":\"2018-07-08T22:00:00.000Z\",\"FTEPerWeek\":6.42,\"__v\":0},{\"_id\":\"5cd93b3cf0d41271c0f19f96\",\"name\":\"Visionary high-level framework\",\"description\":null,\"startDate\":\"2018-06-15T22:00:00.000Z\",\"endDate\":null,\"FTEPerWeek\":3.79,\"__v\":0},{\"_id\":\"5cd93b3cf0d41271c0f19f97\",\"name\":\"Digitized national synergy\",\"description\":null,\"startDate\":\"2019-04-07T22:00:00.000Z\",\"endDate\":null,\"FTEPerWeek\":8.92,\"__v\":0},{\"_id\":\"5cd93b3cf0d41271c0f19f98\",\"name\":\"Multi-layered empowering core\",\"description\":\"generate web-enabled e-tailers\",\"startDate\":\"2019-03-24T23:00:00.000Z\",\"endDate\":\"2019-01-26T23:00:00.000Z\",\"FTEPerWeek\":6.84,\"__v\":0},{\"_id\":\"5cd93b3cf0d41271c0f19f99\",\"name\":\"Focused user-facing ability\",\"description\":\"incentivize dot-com e-markets\",\"startDate\":\"2018-11-12T23:00:00.000Z\",\"endDate\":\"2019-04-29T22:00:00.000Z\",\"FTEPerWeek\":8.21,\"__v\":0},{\"_id\":\"5cd93b3cf0d41271c0f19f9a\",\"name\":\"Open-architected 3rd generation array\",\"description\":\"engineer web-enabled web-readiness\",\"startDate\":\"2018-09-18T22:00:00.000Z\",\"endDate\":\"2018-12-28T23:00:00.000Z\",\"FTEPerWeek\":7.63,\"__v\":0},{\"_id\":\"5cd93b3cf0d41271c0f19f9b\",\"name\":\"Seamless neutral capability\",\"description\":null,\"startDate\":\"2018-09-13T22:00:00.000Z\",\"endDate\":null,\"FTEPerWeek\":8.19,\"__v\":0},{\"_id\":\"5cd93b3cf0d41271c0f19f9c\",\"name\":\"Optional high-level flexibility\",\"description\":null,\"startDate\":\"2019-01-19T23:00:00.000Z\",\"endDate\":null,\"FTEPerWeek\":2.85,\"__v\":0},{\"_id\":\"5cd93b3cf0d41271c0f19f9d\",\"name\":\"Enterprise-wide radical framework\",\"description\":\"repurpose innovative action-items\",\"startDate\":\"2018-10-16T22:00:00.000Z\",\"endDate\":\"2019-01-28T23:00:00.000Z\",\"FTEPerWeek\":1.23,\"__v\":0},{\"_id\":\"5cd93b3cf0d41271c0f19f9e\",\"name\":\"Reactive fault-tolerant complexity\",\"description\":null,\"startDate\":\"2018-09-26T22:00:00.000Z\",\"endDate\":null,\"FTEPerWeek\":8.51,\"__v\":0},{\"_id\":\"5cd93b3cf0d41271c0f19f9f\",\"name\":\"Digitized object-oriented attitude\",\"description\":null,\"startDate\":\"2018-09-03T22:00:00.000Z\",\"endDate\":null,\"FTEPerWeek\":2.33,\"__v\":0},{\"_id\":\"5cd93b3cf0d41271c0f19fa0\",\"name\":\"Cloned scalable matrices\",\"description\":\"productize transparent metrics\",\"startDate\":\"2019-05-02T22:00:00.000Z\",\"endDate\":\"2018-06-12T22:00:00.000Z\",\"FTEPerWeek\":4.91,\"__v\":0},{\"_id\":\"5cd93b3cf0d41271c0f19fa1\",\"name\":\"Managed secondary internet solution\",\"description\":\"grow integrated applications\",\"startDate\":\"2019-01-26T23:00:00.000Z\",\"endDate\":\"2018-12-18T23:00:00.000Z\",\"FTEPerWeek\":1.36,\"__v\":0},{\"_id\":\"5cd93b3cf0d41271c0f19fa2\",\"name\":\"Re-contextualized modular utilisation\",\"description\":\"whiteboard sexy portals\",\"startDate\":\"2018-10-14T22:00:00.000Z\",\"endDate\":\"2019-03-08T23:00:00.000Z\",\"FTEPerWeek\":1.71,\"__v\":0},{\"_id\":\"5cd93b3cf0d41271c0f19fa3\",\"name\":\"Optimized encompassing flexibility\",\"description\":null,\"startDate\":\"2018-10-11T22:00:00.000Z\",\"endDate\":null,\"FTEPerWeek\":1.79,\"__v\":0},{\"_id\":\"5cd93b3cf0d41271c0f19fa4\",\"name\":\"Versatile systematic initiative\",\"description\":\"incubate world-class mindshare\",\"startDate\":\"2019-02-01T23:00:00.000Z\",\"endDate\":\"2018-06-04T22:00:00.000Z\",\"FTEPerWeek\":4.86,\"__v\":0},{\"_id\":\"5cd93b3cf0d41271c0f19fa5\",\"name\":\"Up-sized hybrid circuit\",\"description\":null,\"startDate\":\"2019-05-05T22:00:00.000Z\",\"endDate\":null,\"FTEPerWeek\":2.38,\"__v\":0},{\"_id\":\"5cd93b3cf0d41271c0f19fa6\",\"name\":\"Ameliorated executive installation\",\"description\":null,\"startDate\":\"2018-05-28T22:00:00.000Z\",\"endDate\":null,\"FTEPerWeek\":2.23,\"__v\":0},{\"_id\":\"5cd93b3cf0d41271c0f19fa7\",\"name\":\"Upgradable hybrid time-frame\",\"description\":\"transform proactive systems\",\"startDate\":\"2019-03-26T23:00:00.000Z\",\"endDate\":\"2018-10-01T22:00:00.000Z\",\"FTEPerWeek\":5.76,\"__v\":0},{\"_id\":\"5cd93b3cf0d41271c0f19fa8\",\"name\":\"Right-sized grid-enabled success\",\"description\":\"extend best-of-breed methodologies\",\"startDate\":\"2018-07-31T22:00:00.000Z\",\"endDate\":\"2018-07-14T22:00:00.000Z\",\"FTEPerWeek\":9.76,\"__v\":0},{\"_id\":\"5cd93b3cf0d41271c0f19fa9\",\"name\":\"Reactive motivating core\",\"description\":\"redefine interactive applications\",\"startDate\":\"2019-04-27T22:00:00.000Z\",\"endDate\":\"2018-08-10T22:00:00.000Z\",\"FTEPerWeek\":4.02,\"__v\":0},{\"_id\":\"5cd93b3cf0d41271c0f19faa\",\"name\":\"Profit-focused optimal adapter\",\"description\":\"mesh turn-key applications\",\"startDate\":\"2018-08-22T22:00:00.000Z\",\"endDate\":\"2019-02-12T23:00:00.000Z\",\"FTEPerWeek\":8.39,\"__v\":0},{\"_id\":\"5cd93b3cf0d41271c0f19fab\",\"name\":\"Devolved systemic moratorium\",\"description\":\"e-enable end-to-end models\",\"startDate\":\"2018-08-01T22:00:00.000Z\",\"endDate\":\"2019-05-08T22:00:00.000Z\",\"FTEPerWeek\":8.47,\"__v\":0},{\"_id\":\"5cd93b3cf0d41271c0f19fac\",\"name\":\"Fully-configurable homogeneous complexity\",\"description\":\"visualize real-time eyeballs\",\"startDate\":\"2019-01-27T23:00:00.000Z\",\"endDate\":\"2019-01-10T23:00:00.000Z\",\"FTEPerWeek\":9.48,\"__v\":0},{\"_id\":\"5cd93b3cf0d41271c0f19fad\",\"name\":\"Advanced 24 hour circuit\",\"description\":null,\"startDate\":\"2019-01-06T23:00:00.000Z\",\"endDate\":null,\"FTEPerWeek\":7.34,\"__v\":0},{\"_id\":\"5cd93b3cf0d41271c0f19fae\",\"name\":\"Assimilated 24/7 open system\",\"description\":\"orchestrate bricks-and-clicks niches\",\"startDate\":\"2018-07-29T22:00:00.000Z\",\"endDate\":\"2019-01-23T23:00:00.000Z\",\"FTEPerWeek\":9.12,\"__v\":0},{\"_id\":\"5cd93b3cf0d41271c0f19faf\",\"name\":\"Public-key encompassing time-frame\",\"description\":\"innovate holistic e-markets\",\"startDate\":\"2018-08-14T22:00:00.000Z\",\"endDate\":\"2019-02-15T23:00:00.000Z\",\"FTEPerWeek\":7.01,\"__v\":0},{\"_id\":\"5cd93b3cf0d41271c0f19fb0\",\"name\":\"Front-line 24/7 paradigm\",\"description\":null,\"startDate\":\"2018-09-03T22:00:00.000Z\",\"endDate\":null,\"FTEPerWeek\":7.05,\"__v\":0},{\"_id\":\"5cd93b3cf0d41271c0f19fb1\",\"name\":\"Object-based exuding encoding\",\"description\":\"embrace best-of-breed channels\",\"startDate\":\"2018-05-10T22:00:00.000Z\",\"endDate\":\"2019-01-22T23:00:00.000Z\",\"FTEPerWeek\":5.51,\"__v\":0},{\"_id\":\"5cd93b3cf0d41271c0f19fb2\",\"name\":\"Managed intermediate time-frame\",\"description\":\"grow dot-com content\",\"startDate\":\"2018-05-30T22:00:00.000Z\",\"endDate\":\"2019-01-29T23:00:00.000Z\",\"FTEPerWeek\":4.35,\"__v\":0},{\"_id\":\"5cd93b3cf0d41271c0f19fb3\",\"name\":\"Operative tangible benchmark\",\"description\":\"brand global interfaces\",\"startDate\":\"2018-12-11T23:00:00.000Z\",\"endDate\":\"2019-03-16T23:00:00.000Z\",\"FTEPerWeek\":8.35,\"__v\":0},{\"_id\":\"5cd93b3cf0d41271c0f19fb4\",\"name\":\"Enhanced tangible encoding\",\"description\":\"integrate transparent mindshare\",\"startDate\":\"2018-08-22T22:00:00.000Z\",\"endDate\":\"2018-08-28T22:00:00.000Z\",\"FTEPerWeek\":3.08,\"__v\":0},{\"_id\":\"5cd93b3cf0d41271c0f19fb5\",\"name\":\"Open-architected heuristic support\",\"description\":\"facilitate proactive e-services\",\"startDate\":\"2019-02-08T23:00:00.000Z\",\"endDate\":\"2018-07-07T22:00:00.000Z\",\"FTEPerWeek\":8.35,\"__v\":0},{\"_id\":\"5cd93b3cf0d41271c0f19fb6\",\"name\":\"Face to face context-sensitive frame\",\"description\":null,\"startDate\":\"2019-02-27T23:00:00.000Z\",\"endDate\":null,\"FTEPerWeek\":3.73,\"__v\":0},{\"_id\":\"5cd93b3cf0d41271c0f19fb7\",\"name\":\"Cross-group local model\",\"description\":null,\"startDate\":\"2018-12-10T23:00:00.000Z\",\"endDate\":null,\"FTEPerWeek\":2.74,\"__v\":0},{\"_id\":\"5cd93b3cf0d41271c0f19fb8\",\"name\":\"Right-sized incremental archive\",\"description\":null,\"startDate\":\"2018-11-13T23:00:00.000Z\",\"endDate\":null,\"FTEPerWeek\":2.69,\"__v\":0},{\"_id\":\"5cd93b3cf0d41271c0f19fb9\",\"name\":\"Enterprise-wide upward-trending toolset\",\"description\":\"engage viral eyeballs\",\"startDate\":\"2018-07-26T22:00:00.000Z\",\"endDate\":\"2019-02-02T23:00:00.000Z\",\"FTEPerWeek\":3.28,\"__v\":0},{\"_id\":\"5cd93b3cf0d41271c0f19fba\",\"name\":\"Advanced content-based superstructure\",\"description\":null,\"startDate\":\"2018-09-02T22:00:00.000Z\",\"endDate\":null,\"FTEPerWeek\":1.71,\"__v\":0},{\"_id\":\"5cd93b3cf0d41271c0f19fbb\",\"name\":\"Reduced cohesive hierarchy\",\"description\":\"recontextualize 24/365 content\",\"startDate\":\"2018-06-22T22:00:00.000Z\",\"endDate\":\"2018-06-21T22:00:00.000Z\",\"FTEPerWeek\":1.33,\"__v\":0},{\"_id\":\"5cd93b3cf0d41271c0f19fbc\",\"name\":\"Down-sized user-facing conglomeration\",\"description\":null,\"startDate\":\"2019-01-06T23:00:00.000Z\",\"endDate\":null,\"FTEPerWeek\":9.9,\"__v\":0},{\"_id\":\"5cd93b3cf0d41271c0f19fbd\",\"name\":\"Future-proofed next generation application\",\"description\":\"incentivize end-to-end schemas\",\"startDate\":\"2018-07-26T22:00:00.000Z\",\"endDate\":\"2018-07-29T22:00:00.000Z\",\"FTEPerWeek\":7.19,\"__v\":0},{\"_id\":\"5cd93b3cf0d41271c0f19fbe\",\"name\":\"Fully-configurable directional task-force\",\"description\":\"maximize robust bandwidth\",\"startDate\":\"2018-09-24T22:00:00.000Z\",\"endDate\":\"2019-01-04T23:00:00.000Z\",\"FTEPerWeek\":1.3,\"__v\":0},{\"_id\":\"5cd93b3cf0d41271c0f19fbf\",\"name\":\"Extended methodical moratorium\",\"description\":\"visualize impactful ROI\",\"startDate\":\"2018-09-03T22:00:00.000Z\",\"endDate\":\"2019-03-07T23:00:00.000Z\",\"FTEPerWeek\":3.12,\"__v\":0},{\"_id\":\"5cd93b3cf0d41271c0f19fc0\",\"name\":\"Secured intermediate encryption\",\"description\":null,\"startDate\":\"2018-08-16T22:00:00.000Z\",\"endDate\":null,\"FTEPerWeek\":5.5,\"__v\":0},{\"_id\":\"5cd93b3cf0d41271c0f19fc1\",\"name\":\"Multi-tiered object-oriented customer loyalty\",\"description\":null,\"startDate\":\"2018-12-29T23:00:00.000Z\",\"endDate\":null,\"FTEPerWeek\":5.53,\"__v\":0},{\"_id\":\"5cd93b3cf0d41271c0f19fc2\",\"name\":\"Future-proofed multi-state capability\",\"description\":null,\"startDate\":\"2018-07-20T22:00:00.000Z\",\"endDate\":null,\"FTEPerWeek\":7.17,\"__v\":0},{\"_id\":\"5cd93b3cf0d41271c0f19fc3\",\"name\":\"Down-sized real-time orchestration\",\"description\":null,\"startDate\":\"2018-09-30T22:00:00.000Z\",\"endDate\":null,\"FTEPerWeek\":4.74,\"__v\":0},{\"_id\":\"5cd93b3cf0d41271c0f19fc4\",\"name\":\"Multi-layered local artificial intelligence\",\"description\":\"incentivize killer metrics\",\"startDate\":\"2018-09-22T22:00:00.000Z\",\"endDate\":\"2018-07-26T22:00:00.000Z\",\"FTEPerWeek\":2.29,\"__v\":0},{\"_id\":\"5cd93b3cf0d41271c0f19fc5\",\"name\":\"Ergonomic zero administration extranet\",\"description\":\"target visionary metrics\",\"startDate\":\"2019-02-03T23:00:00.000Z\",\"endDate\":\"2018-10-30T23:00:00.000Z\",\"FTEPerWeek\":9.39,\"__v\":0},{\"_id\":\"5cd93b3cf0d41271c0f19fc6\",\"name\":\"Virtual global application\",\"description\":null,\"startDate\":\"2019-02-04T23:00:00.000Z\",\"endDate\":null,\"FTEPerWeek\":3.26,\"__v\":0}]","type":"application/json"},"hz":127.69779615733863},"getByIdRoute":{"name":"Node/getByIdRoute","href":"http://localhost:3000/assignments/5cd93ab9f184586224c7dcc5","stats":{"sample":[0.004350814,0.004196345,0.004320395,0.003963259,0.004508445,0.003873186,0.003688297,0.004211358,0.003706469,0.003753482,0.004899556,0.004948543,0.004519506,0.003751111,0.006894223,0.004694124,0.004429828,0.003766124,0.003710025,0.003773234,0.003685531,0.003973136,0.005636741,0.005673481,0.00419437,0.004269037,0.004315259,0.003896889,0.003849087,0.004436543,0.004879802,0.004528593,0.004846222,0.005594864,0.003989333,0.003787457,0.004531753,0.004166716,0.004333827,0.00463921,0.003910321,0.004492642,0.003889383,0.005365729,0.004463407,0.004631703,0.004269432,0.00807032,0.004073877,0.004204247,0.003745185,0.003944691,0.004201876,0.005237729,0.004513581,0.004544395,0.005654914,0.006281086,0.004196345,0.003890963,0.003811951,0.003649581,0.003706864,0.003895704,0.003848296,0.004115358,0.004282864,0.003709629,0.00365037,0.003539753,0.006993382,0.004929185,0.004274963,0.005163061,0.003659062,0.003464296,0.003402271,0.003607309,0.003637728,0.003465086,0.004527803,0.004539655,0.00457758,0.003824197,0.004023704,0.005036247,0.004009877,0.003996444,0.003793778,0.004993185,0.004427062,0.00403595,0.003967605,0.003962864,0.004140642,0.00422558,0.004178173,0.003839605,0.004093235,0.003910716],"mean":0.00433678616,"singleMean":0.00433678616,"variance":5.891640659126208e-7,"deviation":0.0007675702351658907,"sem":0.00007675702351658908,"moe":0.0001504437660925146,"rme":3.469015084952093,"p75":0.004530963000000001,"p95":0.00567255265,"p99":0.008059550619999994,"p999":0.00807032},"errors":{},"options":{"method":"get","concurrencyLevel":1,"start":"2019-05-13T09:39:09.254Z","end":"2019-05-13T09:39:09.689Z"},"request":{"headers":{"Accept":"application/json"}},"response":{"header":{"x-powered-by":"Express","content-type":"application/json; charset=utf-8","content-length":"144","etag":"W/\"90-VHqP4WSEkpXGD3reY8VUYGmVV5k\"","date":"Mon, 13 May 2019 09:39:09 GMT","connection":"close"},"statusCode":200,"body":"{\"_id\":\"5cd93ab9f184586224c7dcc5\",\"name\":\"test\",\"description\":null,\"startDate\":\"2019-01-04T23:00:00.000Z\",\"endDate\":null,\"FTEPerWeek\":5,\"__v\":0}","type":"application/json"},"hz":230.5854988247795},"putRoute":{"name":"Node/putRoute","href":"http://localhost:3000/assignments/5cd93ab9f184586224c7dcc5","stats":{"sample":[0.009651753,0.007116247,0.011364345,0.007275852,0.00918795,0.008593778,0.007754666,0.006921877,0.00656553,0.007346568,0.009938172,0.007214222,0.009807802,0.00652958,0.006088297,0.006195753,0.007290469,0.006593581,0.006206025,0.00704,0.006431605,0.006188247,0.006605827,0.006603851,0.006119901,0.005983605,0.007158124,0.007581629,0.009103802,0.007563061,0.014125432,0.009562864,0.009485827,0.009129087,0.008216494,0.008442469,0.00742874,0.007329976,0.007004049,0.006844444,0.006743309,0.006473482,0.006870518,0.005929481,0.005711013,0.005767506,0.005773827,0.006036939,0.006868543,0.005797136,0.007050667,0.005849284,0.006944,0.006522865,0.005857975,0.005743802,0.006031013,0.006178371,0.006063013,0.007046716,0.006850371,0.005976494,0.005912494,0.006398024,0.006005728,0.005904197,0.007805234,0.007566617,0.006740543,0.006943605,0.007578864,0.007563851,0.006938864,0.006798618,0.006522075,0.006815605,0.00678558,0.00604721,0.006209185,0.006842074,0.008774321,0.006523655,0.005934222,0.006867753,0.006159012,0.006635457,0.005820445,0.006077234,0.006243951,0.005953976,0.006381037,0.006245926,0.006034568,0.005965827,0.005856395,0.006021136,0.005773432,0.005557333,0.005672297,0.005975704],"mean":0.006955298750000002,"singleMean":0.006955298750000002,"variance":0.0000018008110258438454,"deviation":0.0013419430039475766,"sem":0.00013419430039475765,"moe":0.000263020828773725,"rme":3.7815892347359616,"p75":0.0072868147500000004,"p95":0.009647308549999999,"p99":0.014097821129999986,"p999":0.014125432},"errors":{},"options":{"method":"put","concurrencyLevel":1,"start":"2019-05-13T09:39:09.691Z","end":"2019-05-13T09:39:10.388Z"},"request":{"headers":{"Accept":"application/json"},"data":{"name":"test"}},"response":{"header":{"x-powered-by":"Express","content-type":"application/json; charset=utf-8","content-length":"144","etag":"W/\"90-VHqP4WSEkpXGD3reY8VUYGmVV5k\"","date":"Mon, 13 May 2019 09:39:09 GMT","connection":"close"},"statusCode":200,"body":"{\"_id\":\"5cd93ab9f184586224c7dcc5\",\"name\":\"test\",\"description\":null,\"startDate\":\"2019-01-04T23:00:00.000Z\",\"endDate\":null,\"FTEPerWeek\":5,\"__v\":0}","type":"application/json"},"hz":143.77527636753197}}},"info":{"date":"2019-05-13T09:39:10.393Z","apiName":"Node"}};
+    // --></script>
+    <div id="report">
+      <div id="report-details"><h1>Api Benchmark report</h1></div>
+      <div id="charts"></div>
+    </div>
+    <div style="text-align: center">
+    Generated by <a href="https://github.com/matteofigus/api-benchmark" target="_blank">api-benchmark</a><br /><br />
+    <iframe src="http://ghbtns.com/github-btn.html?user=matteofigus&repo=api-benchmark&type=watch&count=true" allowtransparency="true" frameborder="0" scrolling="0" width="110" height="20"></iframe>
+    </div>
+    <script>
+
+      var selectors = {
+        charts: '#charts',
+        reportDetails: '#report-details',
+        panel: '.panel',
+        panels: {
+          stats: '.stats',
+          distribution: '.distribution',
+          response: '.response',
+          request: '.request'
+        },
+        button: '.button',
+        buttons: {
+          stats: '.button-stats',
+          distribution: '.button-distribution',
+          response: '.button-response',
+          request: '.button-request'
+        }
+      };
+
+      var formatNumber = function(number) {
+        number = String(number).split('.');
+        return number[0].replace(/(?=(?:\d{3})+$)(?!\b)/g, ',') +
+          (number[1] ? '.' + number[1] : '');
+      };
+
+      var formatDate = function(date){
+        return date.replace(/T/g, ' ').replace(/Z/g, ' ');
+      };
+
+      var fixNumber = function(number, digits){
+        return formatNumber(number.toFixed(digits));
+      };
+
+      var decodeHtml = function(text){
+        return $('<div/>').text(text).html();
+      };
+
+      var templates = {
+        reportDetails: function(info){
+          var formattedDate = formatDate(info.date);
+          return 'Benchmarked ' + info.apiName + ' on ' + formattedDate;
+        },
+        route: function(routeData, i){
+          var errorsCount = 0,
+              errorsDesc = '(',
+              duration = (new Date(routeData.options.end) - new Date(routeData.options.start))/1e3;
+
+          for(var errorType in routeData.errors){
+            errorsCount += routeData.errors[errorType].length;
+            errorsDesc += routeData.errors[errorType].length + ' ' + errorType + ',';
+          }
+
+          if(errorsCount == 0)
+            errorsDesc = '';
+          else
+            errorsDesc = errorsDesc.substr(0, errorsDesc.length - 1) + ')';
+
+          var template = '<div class="route"><div class="buttons">' +
+            '<a href="#stats" class="button button-stats selected">Stats</a>' +
+            '<a href="#distribution" class="button button-distribution">Distribution</a>' +
+            '<a href="#request" class="button button-request">Request details</a>' +
+            '<a href="#response" class="button button-response">Response details</a>' +
+            '</div><div class="stats panel"><div class="chart" id="chart' + i + '"></div>' +
+            '<div class="stats-details"><ul><li>' + routeData.stats.sample.length + ' run' +
+            (routeData.stats.sample.length > 1 ? 's' : '') + ' sampled with concurrency: ' +
+            routeData.options.concurrencyLevel + '</li>';
+
+          if(routeData.options.expectedStatusCode)
+            template += '<li>Expected status code: ' + routeData.options.expectedStatusCode + '</li>';
+
+          if(routeData.options.maxMean)
+            template += '<li>Expected max mean: ' + routeData.options.maxMean + '</li>';
+
+          if(routeData.options.maxSingleMean)
+            template += '<li>(*) Expected max mean across all concurrent requests: ' + routeData.options.maxSingleMean + '</li>';
+
+          template += '</ul><ul><li>Started: ' + formatDate(routeData.options.start) + '</li>' +
+            '<li>Ended: ' + formatDate(routeData.options.end) + ' (' + duration + ' seconds)</li>' +
+            '<li>' + fixNumber(routeData.hz, 2) + ' ops/sec \xb1 ' + fixNumber(routeData.stats.rme, 2) + '%</li>' +
+
+            '<li class="' + (!errorsCount ? 'green' : 'red') + '">' + errorsCount + ' error' +
+            (errorsCount == 1 ? '' : 's') + ' ' + errorsDesc + '</li>' +
+
+            '<li>Sample arithmetic mean: ' + fixNumber(routeData.stats.mean, 6) + '</li>';
+
+          if(routeData.options.concurrencyLevel > 1)
+            template += '<li>Mean across all the concurrent requests: ' + fixNumber(routeData.stats.singleMean, 6) + '</li>';
+
+          template += '<li>Sample standard deviation: ' + fixNumber(routeData.stats.deviation, 6) + '</li>' +
+            '<li>Margin of error: ' + fixNumber(routeData.stats.moe, 6) + '</li>' +
+            '<li>The standard error of the mean: ' + fixNumber(routeData.stats.sem, 6) + '</li>' +
+            '<li>The sample variance: ' + fixNumber(routeData.stats.variance, 6) + '</li>' +
+            '</ul><ul><li>75% Percentile: ' + fixNumber(routeData.stats.p75, 6) + '</li>' +
+            '<li>95% Percentile: ' + fixNumber(routeData.stats.p95, 6) + '</li>' +
+            '<li>99% Percentile: ' + fixNumber(routeData.stats.p99, 6) + '</li>' +
+            '<li>99.9% Percentile: ' + fixNumber(routeData.stats.p999, 6) + '</li>' +
+            '</ul></div></div><div class="distribution panel"><div class="distchart" id="distchart' + i + '">' +
+            '</div></div><div class="request panel hide">Request: ' + routeData.options.method.toUpperCase() +
+            ' <a href="' + routeData.href + '" target="_blank">' +
+            routeData.href + '</a><br />Concurrency level: ' + routeData.options.concurrencyLevel + '<br />';
+
+          if(routeData.options.delay)
+            template += 'Delay between bench cycles: ' + routeData.options.delay + '<br />';
+
+          var requestHeaders = 'none',
+              requestData = 'none',
+              requestQuery = 'none';
+
+          if(!!routeData.request.headers)
+            requestHeaders = '<br /><pre><code>' + JSON.stringify(routeData.request.headers, undefined, 2) + '</pre></code>';
+
+          if(!!routeData.request.data)
+            requestData = '<br /><pre><code>' + JSON.stringify(routeData.request.data, undefined, 2) + '</pre></code>';
+
+          if(!!routeData.request.query)
+            requestQuery = '<br /><pre><code>' + JSON.stringify(routeData.request.query, undefined, 2) + '</pre></code>';
+
+          template += '<br />Headers sent: ' + requestHeaders + '<br />Data sent: ' + requestData + '<br />Query sent: ' + requestQuery + '<br /></div><div class="response panel hide">Data here refers to the first sampled response.<br /><br />';
+
+          var responseHeader = JSON.stringify(routeData.response.header, undefined, 2),
+              responseBody = '';
+
+          try {
+            responseBody = JSON.stringify(JSON.parse(decodeHtml(routeData.response.body)), undefined, 2);
+          } catch(e){
+            responseBody = decodeHtml(routeData.response.body);
+          }
+
+          template += 'Response status: ' + routeData.response.statusCode + '<br />Response headers:<br />' +
+            '<pre><code>' + responseHeader + '</code></pre>' +
+            '<br />Response body:<br /><pre><code>' + responseBody + '</code></pre><br /></div></div>';
+
+          return template;
+        }
+      };
+
+      var bindButtons = function(){
+        var bindButton = function(panelName){
+          $(selectors.buttons[panelName]).click(function(){
+            var $sender = $(this),
+                $panelsContainer = $sender.parent().parent();
+
+            $panelsContainer.find(selectors.button).removeClass('selected');
+            $sender.addClass('selected');
+
+            $panelsContainer.find(selectors.panel).addClass('hide');
+            $panelsContainer.find(selectors.panels[panelName]).removeClass('hide');
+
+            return false;
+          });
+        };
+
+        bindButton('stats');
+        bindButton('distribution');
+        bindButton('response');
+        bindButton('request');
+      };
+
+      $(function(){
+        $(selectors.reportDetails).append(templates.reportDetails(data.info));
+
+        var counter = 0;
+        for(serviceName in data.benchmark){
+          for(routeName in data.benchmark[serviceName]){
+            $(selectors.charts).append(templates.route(data.benchmark[serviceName][routeName], counter));
+
+            var samples = data.benchmark[serviceName][routeName]['stats']['sample'],
+                meanArray = [],
+                mean = data.benchmark[serviceName][routeName]['stats']['mean'],
+                singleMeanArray = [],
+                singleMean = data.benchmark[serviceName][routeName]['stats']['singleMean'],
+                maxMeanArray = [],
+                maxMean = data.benchmark[serviceName][routeName].options.maxMean !== undefined,
+                maxSingleMeanArray = [],
+                maxSingleMean = data.benchmark[serviceName][routeName].options.maxSingleMean !== undefined,
+                errorsArray = [],
+                areThereSomeErrors = false;
+
+            for(var i = 0; i < samples.length; i++){
+              meanArray.push(mean);
+              singleMeanArray.push(singleMean);
+
+              errorsArray.push(null);
+
+              if(maxMean)
+                maxMeanArray.push(data.benchmark[serviceName][routeName].options.maxMean);
+
+              if(maxSingleMean)
+                maxSingleMeanArray.push(data.benchmark[serviceName][routeName].options.maxSingleMean);
+            }
+
+            for(var errorType in data.benchmark[serviceName][routeName].errors){
+              var errorsOfType = data.benchmark[serviceName][routeName]['errors'][errorType];
+              for(var i = 0; i < errorsOfType.length; i++){
+                if(errorsOfType[i].pos !== undefined){
+                  errorsArray[errorsOfType[i].pos] = data.benchmark[serviceName][routeName]['stats']['sample'][errorsOfType[i].pos];
+                  areThereSomeErrors = true;
+                }
+              }
+            }
+
+            var getSeriesOptions = function(label, color){
+              return {
+                showMarker: false,
+                pointLabels: { show: true },
+                label: label,
+                color: color
+              };
+            };
+
+            var lines = [samples],
+                series = [getSeriesOptions('Samples', '#6699FF')];
+
+            if(maxMean){
+              lines.push(maxMeanArray);
+              series.push(getSeriesOptions('Max Mean', '#F90'));
+            }
+
+            lines.push(meanArray);
+            series.push(getSeriesOptions('Mean', '#66FF00'));
+
+            if(maxSingleMean){
+              lines.push(maxSingleMeanArray);
+              series.push(getSeriesOptions('Max Single Mean (*)', '#EBFF00'));
+
+              lines.push(singleMeanArray);
+              series.push(getSeriesOptions('Single mean', '#FC6333'));
+            }
+
+            if(areThereSomeErrors > 0){
+              lines.push(errorsArray);
+              series.push({
+                showLine:false,
+                markerOptions: { size: 7, style:'x' },
+                label: 'Errors',
+                color: '#FF0000'
+              });
+            }
+
+            var options = {
+              title: {
+                text: data.benchmark[serviceName][routeName]['name'],
+                color: '#F1F1F1'
+              },
+              animate: true,
+              grid: {
+                background: '#000000', textColor: '#F1F1F1'
+              },
+              seriesDefaults:{
+                rendererOptions: {
+                  showDataLabels: true
+                }
+              },
+              highlighter: {
+                show: true,
+                sizeAdjust: 7.5
+              },
+              cursor:{
+                show: true,
+                zoom:true,
+              },
+              legend: {
+                show:true,
+                location: 'se',
+                background: 'rgba(101, 0, 253, 0.89)'
+              },
+              axesDefaults: {
+                labelRenderer: $.jqplot.CanvasAxisLabelRenderer
+              },
+              axes: {
+                xaxis: {
+                  label: 'Samples',
+                  pad: 0
+                },
+                yaxis: {
+                  label: 'Response time (seconds)',
+                  tickOptions: {
+                    formatString:'%.6f'
+                  }
+                }
+              },
+              series: series
+            };
+
+            $.jqplot('chart' + counter, lines, options);
+            counter++;
+          }
+        }
+        hljs.initHighlightingOnLoad();
+        bindButtons();
+      });
+
+      $(function(){
+        var counter = 0;
+        for(serviceName in data.benchmark){
+          for(routeName in data.benchmark[serviceName]){
+            var samples = data.benchmark[serviceName][routeName]['stats']['sample'];
+            var sortedSamples = _.orderBy(samples);
+            var totalDelta = sortedSamples[sortedSamples.length - 1] - sortedSamples[0];
+
+            var bucketCount = ~~Math.min(totalDelta*1000, sortedSamples.length);
+            var delta = totalDelta/bucketCount;
+
+            var buckets = [[sortedSamples[0] + delta/2.0, 0]];
+
+            for (var i = 0; i < samples.length; i++) {
+              var s = sortedSamples[i];
+              while(s > (sortedSamples[0] + buckets.length * delta)) {
+                buckets.push([(sortedSamples[0] + buckets.length * delta + delta/2.0), 0]);
+              }
+              buckets[buckets.length - 1][1]++;
+            }
+
+            buckets = _.map(buckets, function(b){
+              return [b[0], 100*b[1]/samples.length];
+            });
+
+
+            var lines = [buckets],
+                series = [{
+                  showMarker: false,
+                  pointLabels: { show: true },
+                  label: 'Samples',
+                  color: '#6699FF',
+                  rendererOptions: {
+                    smooth: true
+                  }
+                }];
+
+            var options = {
+              title: {
+                text: data.benchmark[serviceName][routeName]['name'],
+                color: '#F1F1F1'
+              },
+              animate: true,
+              grid: {
+                background: '#000000', textColor: '#F1F1F1'
+              },
+              seriesDefaults:{
+                rendererOptions: {
+                  showDataLabels: true
+                }
+              },
+              highlighter: {
+                show: true,
+                sizeAdjust: 7.5
+              },
+              legend: {
+                show:true,
+                location: 'se',
+                background: 'rgba(101, 0, 253, 0.89)'
+              },
+              cursor:{
+                show: true,
+                zoom:true,
+              },
+              axesDefaults: {
+                labelRenderer: $.jqplot.CanvasAxisLabelRenderer
+              },
+              axes: {
+                xaxis: {
+                  label: 'Response time (seconds)',
+                  tickOptions: {
+                    formatString:'%.3f'
+                  }
+                },
+                yaxis: {
+                  label: 'Percent of responses',
+                  tickOptions: {
+                    formatString: '%.1f%'
+                  }
+                }
+              },
+              series: series
+            };
+
+            $.jqplot('distchart' + counter, lines, options);
+            counter++;
+          }
+        }
+        $(".distribution.panel").addClass('hide');
+      });
+    </script>
+  </body>
+</html>
